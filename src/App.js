@@ -1,6 +1,6 @@
 import { Virtuoso } from "react-virtuoso";
 import { generateUsers } from "./data";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 
 export default function App() {
   const [users, setUsers] = useState(() => []);
@@ -19,6 +19,10 @@ export default function App() {
     // }, 200);
   }, [setUsers]);
 
+  const onBottomReached = (isAtBottom) => {
+    if (isAtBottom) loadMore();
+  };
+
   useEffect(() => {
     loadMore();
   }, []);
@@ -27,8 +31,10 @@ export default function App() {
     <Virtuoso
       style={{ height: "100dvh" }}
       data={users}
-      endReached={loadMore}
-      overscan={100}
+      // endReached={(index) => console.log(index)}
+      atBottomStateChange={onBottomReached}
+      atBottomThreshold={6000}
+      overscan={10}
       itemContent={(index, user) => {
         return (
           <div
